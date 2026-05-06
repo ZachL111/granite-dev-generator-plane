@@ -1,0 +1,6 @@
+name,focus,signal,slack,drag,confidence,score,lane
+baseline,change width,59,33,9,47,171,ship
+stress,diagnostic quality,65,36,12,45,175,ship
+edge,review cost,74,45,8,45,214,ship
+recovery,safe rewrite,78,36,29,70,175,ship
+stale,change width,76,49,10,88,259,ship

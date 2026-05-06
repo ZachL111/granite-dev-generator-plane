@@ -1,69 +1,40 @@
 # granite-dev-generator-plane
 
-`granite-dev-generator-plane` treats developer tools as a local verification problem. The Rust implementation is intentionally narrow, but the fixtures and notes make the behavior explicit.
+`granite-dev-generator-plane` is a compact Rust repository for developer tools, centered on this goal: Build a Rust toolkit that studies generator behavior through node-edge fixtures, with cycle and reachability reports and local-only command execution.
 
-## Granite Dev Generator Plane Checkpoints
+## Problem It Tries To Make Smaller
 
-Treat the compact fixture as the contract and the extended examples as a scratchpad. The code should stay boring enough that a change in behavior is obvious from the test output.
+I want this repository to be useful as a quick reading exercise: fixtures first, implementation second, verifier last.
 
-## What This Is For
+## Granite Dev Generator Plane Review Notes
 
-I use this kind of project to make a rule visible before adding more machinery around it. The important part here is not the size of the codebase. It is that the input signals, scoring rule, fixture data, and expected output can all be checked in one sitting.
+`stale` and `baseline` are the cases worth reading first. They show the optimistic and cautious ends of the fixture.
 
-## Project Layout
+## Working Pieces
 
-- `src`: primary implementation
-- `tests`: verification harness
-- `fixtures`: compact golden scenarios
-- `examples`: expanded scenario set
-- `metadata`: project constants and verification metadata
-- `docs`: operations and extension notes
-- `scripts`: local verification and audit commands
-- `Cargo.toml`: Rust package metadata
+- `fixtures/domain_review.csv` adds cases for change width and diagnostic quality.
+- `metadata/domain-review.json` records the same cases in structured form.
+- `config/review-profile.json` captures the read order and the two review questions.
+- `examples/granite-dev-generator-walkthrough.md` walks through the case spread.
+- The Rust code includes a review path for `change width` and `change width`.
+- `docs/field-notes.md` explains the strongest and weakest cases.
 
-## Useful Pieces
+## Design Notes
 
-- Includes extended examples for safe defaults, including `surge` and `degraded`.
-- Documents repeatable output tradeoffs in `docs/operations.md`.
-- Runs locally with a single verification command and no external credentials.
-- Stores project constants and verification metadata in `metadata/project.json`.
-- Adds a repository audit script that checks structure before running the language verifier.
+The fixture data drives the tests. The code stays thin, while `metadata/domain-review.json` and `config/review-profile.json` explain what each case is meant to protect.
 
-## Architecture Notes
+The Rust code keeps the review rule close to the tests.
 
-The project is organized around a compact model rather than a large framework. Inputs are scored, classified, and checked against golden fixtures. The constants live in code and are mirrored in metadata so documentation drift is easy to catch. The Rust code keeps ownership and data movement plain, which makes the tests useful for checking both behavior and API shape.
-
-## Tooling
-
-Clone the repository, enter the directory, and run the verifier. No database server, cloud account, or token is required.
-
-## Case Study
-
-The extended cases are not random smoke tests. `degraded` keeps pressure on the review path, while `surge` shows the model when capacity and weight are strong enough to clear the threshold.
-
-## Local Workflow
+## Example Run
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
 ```
 
-This runs the language-level build or test path against the compact fixture set.
+## Tests
 
-## Quality Gate
+The check exercises the source code and the review fixture. `stale` is the high score at 259; `baseline` is the low score at 171.
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit.ps1
-```
+## Known Limits
 
-The audit command checks repository structure and README constraints before it delegates to the verifier.
-
-## Expansion Ideas
-
-- Add a loader for `examples/extended_cases.csv` and promote selected cases into the language test suite.
-- Add a short report command that prints the score breakdown for a single scenario.
-- Add malformed input fixtures so the failure path is as visible as the happy path.
-- Add one more developer tools fixture that focuses on a malformed or borderline input.
-
-## Scope
-
-The fixture set is deliberately small. That keeps the review surface clear, but it also means the model should not be treated as a complete domain simulator.
+No external service is required. A deeper version would add more negative cases and a clearer boundary around invalid input.
