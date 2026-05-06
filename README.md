@@ -1,43 +1,69 @@
 # granite-dev-generator-plane
 
-granite-dev-generator-plane is a Rust project for developer tools. It focuses on this technical goal: Build a Rust toolkit that studies generator behavior through node-edge fixtures, with cycle and reachability reports and local-only command execution.
+`granite-dev-generator-plane` treats developer tools as a local verification problem. The Rust implementation is intentionally narrow, but the fixtures and notes make the behavior explicit.
 
-## Why it exists
+## Granite Dev Generator Plane Checkpoints
 
-Small engineering tools are easiest to trust when their rules are explicit, testable, and cheap to run locally. This repository packages a focused model with fixture data and a local verification path so behavior can be reviewed without external services.
+Treat the compact fixture as the contract and the extended examples as a scratchpad. The code should stay boring enough that a change in behavior is obvious from the test output.
 
-## Features
+## What This Is For
 
-- Deterministic policy scoring over fixture scenarios.
-- Clear accept or review decisions based on a documented threshold.
-- A command-line or local test path for quick validation.
-- Golden fixture data for repeatable checks.
-- Minimal dependencies and a compact project layout.
+I use this kind of project to make a rule visible before adding more machinery around it. The important part here is not the size of the codebase. It is that the input signals, scoring rule, fixture data, and expected output can all be checked in one sitting.
+
+## Project Layout
+
+- `src`: primary implementation
+- `tests`: verification harness
+- `fixtures`: compact golden scenarios
+- `examples`: expanded scenario set
+- `metadata`: project constants and verification metadata
+- `docs`: operations and extension notes
+- `scripts`: local verification and audit commands
+- `Cargo.toml`: Rust package metadata
+
+## Useful Pieces
+
+- Includes extended examples for safe defaults, including `surge` and `degraded`.
+- Documents repeatable output tradeoffs in `docs/operations.md`.
+- Runs locally with a single verification command and no external credentials.
+- Stores project constants and verification metadata in `metadata/project.json`.
+- Adds a repository audit script that checks structure before running the language verifier.
 
 ## Architecture Notes
 
-The core module exposes a small scoring API. Inputs are simple numeric signals: demand, capacity, latency, risk, and weight. The score uses a threshold of 159, risk penalty 6, latency penalty 2, and weight bonus 2. Tests exercise the public API against the fixture cases in `fixtures/cases.csv`.
+The project is organized around a compact model rather than a large framework. Inputs are scored, classified, and checked against golden fixtures. The constants live in code and are mirrored in metadata so documentation drift is easy to catch. The Rust code keeps ownership and data movement plain, which makes the tests useful for checking both behavior and API shape.
 
-## Setup
+## Tooling
 
-Install the Rust toolchain and run commands from the repository root.
+Clone the repository, enter the directory, and run the verifier. No database server, cloud account, or token is required.
 
-## Usage
+## Case Study
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
-```
+The extended cases are not random smoke tests. `degraded` keeps pressure on the review path, while `surge` shows the model when capacity and weight are strong enough to clear the threshold.
 
-The verification script builds or runs the project and checks the fixture decisions.
-
-## Tests
+## Local Workflow
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
 ```
 
-## Limitations And Roadmap
+This runs the language-level build or test path against the compact fixture set.
 
-- The fixture set is intentionally small so it can be audited by hand.
-- Future work could add richer domain-specific input adapters.
-- The model is a local demonstration and does not claim production use.
+## Quality Gate
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit.ps1
+```
+
+The audit command checks repository structure and README constraints before it delegates to the verifier.
+
+## Expansion Ideas
+
+- Add a loader for `examples/extended_cases.csv` and promote selected cases into the language test suite.
+- Add a short report command that prints the score breakdown for a single scenario.
+- Add malformed input fixtures so the failure path is as visible as the happy path.
+- Add one more developer tools fixture that focuses on a malformed or borderline input.
+
+## Scope
+
+The fixture set is deliberately small. That keeps the review surface clear, but it also means the model should not be treated as a complete domain simulator.
