@@ -1,0 +1,17 @@
+{
+  "repo": "granite-dev-generator-plane",
+  "thresholds": {
+    "signal": 4,
+    "slack": 2,
+    "confidence": 2,
+    "drag": 3,
+    "ship": 151,
+    "watch": 117
+  },
+  "terms": [
+    "change width",
+    "diagnostic quality",
+    "review cost",
+    "safe rewrite"
+  ]
+}
